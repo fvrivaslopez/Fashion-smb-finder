@@ -20,6 +20,12 @@ Built as a practical prospecting tool for anyone who works with local small busi
 | 📍 KML route (Google Earth / Maps) | Optimised visit order on your phone |
 | 📄 CSV | Further analysis or CRM import |
 
+The HTML map is saved straight to your `outputs/` folder — that's already
+the "download," no extra step needed. The heat map is a togglable layer
+inside that same file: open it in your browser and use the layer switch
+in the top-right corner to show/hide the 🔥 heat overlay. Full details are
+in the app itself under **Option 5 → How maps & heat maps work**.
+
 ---
 
 ## Demo output
@@ -59,7 +65,7 @@ pip install -r requirements.txt
 python fashion_smb_finder.py
 ```
 
-On first run, go to **Option 5 → Configuration** and paste your API key. Then select **Option 1** to run your first search.
+On first run, go to **Option 6 → Configuration** and paste your API key. Then select **Option 1** to run your first search.
 
 ---
 
@@ -73,7 +79,7 @@ Short version:
 1. [Create a Google Cloud project](https://console.cloud.google.com/)
 2. Enable **Places API** in the API library
 3. Create an API key under Credentials
-4. Paste it into the app (Option 5)
+4. Paste it into the app (Option 6)
 
 ---
 

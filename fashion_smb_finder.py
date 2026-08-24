@@ -521,18 +521,25 @@ def generate_map(stores: list, name: str, center: tuple = None) -> str:
                                  prefix="fa"),
             ).add_to(map_)
 
-    # Heat layer for density
+    # Heat layer for density (as a named, toggleable overlay)
     heat_data = [[t["lat"], t["lng"]] for t in stores]
     try:
         from folium.plugins import HeatMap
-        HeatMap(heat_data, radius=25, blur=15).add_to(map_)
+        heat_layer = folium.FeatureGroup(name="🔥 Heat Map (density)", show=True)
+        HeatMap(heat_data, radius=25, blur=15).add_to(heat_layer)
+        heat_layer.add_to(map_)
+        folium.LayerControl(collapsed=False).add_to(map_)
     except ImportError:
         pass  # HeatMap not available, continue without it
 
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
     filename = f"{OUTPUT_DIR}/{name}_{timestamp}.html"
     map_.save(filename)
+    full_path = os.path.abspath(filename)
     print(f"\n  🗺️  Map saved: {filename}")
+    print(f"      Full path: {full_path}")
+    print(f"      Open it in any browser — use the layer switch (top-right)")
+    print(f"      to toggle the 🔥 Heat Map on/off.")
     return filename
 
 
@@ -705,10 +712,11 @@ def main_menu():
     print("   2) 🗺️   View latest generated routes")
     print("   3) 📋  Search history")
     print("   4) ❓  How to get your Google API Key")
-    print("   5) ⚙️   Configuration")
-    print("   6) 🚪  Exit\n")
+    print("   5) 🔥  How maps & heat maps work (and how to get them)")
+    print("   6) ⚙️   Configuration")
+    print("   7) 🚪  Exit\n")
 
-    option = input_option(1, 6)
+    option = input_option(1, 7)
 
     if option == 1:
         search_menu()
@@ -720,8 +728,10 @@ def main_menu():
     elif option == 4:
         how_to_get_api_key()
     elif option == 5:
-        config_menu()
+        how_maps_and_heatmaps_work()
     elif option == 6:
+        config_menu()
+    elif option == 7:
         print(color("\n  Goodbye! 🚀\n", "1;33"))
         return
 
@@ -1007,6 +1017,66 @@ def how_to_get_api_key():
   ─────────────────────────────────
   · Return to this program → Option 5 (Configuration)
   · Option 1 → paste your API Key
+""")
+    input("\n  [Press ENTER to return to menu]")
+    main_menu()
+
+
+def how_maps_and_heatmaps_work():
+    clear()
+    separator("MAPS & HEAT MAPS — HOW THEY WORK")
+    print(f"""
+  WHAT GETS CREATED
+  ──────────────────
+  Every time you run a search and choose to export a map
+  (Option 1 → export menu → "a" or "d"), the app builds ONE
+  interactive HTML file that contains BOTH:
+
+    • 📍 Store markers   — every store found, clickable, grouped
+                            and color-coded by street.
+    • 🔥 Heat map layer  — a red/orange/yellow overlay showing
+                            WHERE stores are most concentrated.
+
+  These are not two separate files — the heat map is a LAYER
+  inside the same map file.
+
+  WHERE THE FILE LIVES
+  ─────────────────────
+  It is saved automatically to your computer here:
+
+    {color(os.path.abspath(OUTPUT_DIR), '1;36')}/<city>_<timestamp>.html
+
+  That IS the "download" — nothing else to click. As soon as it's
+  generated it already exists as a normal file on your disk.
+
+  HOW TO OPEN IT
+  ────────────────
+  • From this app: after generating, answer "y" when asked
+    "Open map in browser?" — or use Option 2 (View latest
+    generated routes) any time later.
+  • Manually: go to the '{OUTPUT_DIR}/' folder and double-click
+    the .html file — it opens in your default web browser.
+
+  HOW TO SEE / TOGGLE THE HEAT MAP
+  ───────────────────────────────────
+  Once the map is open in your browser, look at the small
+  layer-control box in the TOP-RIGHT corner. It lists:
+
+    ☑ 🔥 Heat Map (density)
+
+  Check/uncheck it to show or hide the heat overlay on top of
+  the store markers.
+
+  MOVING / SHARING THE MAP OR HEAT MAP
+  ───────────────────────────────────────
+  The .html file is fully self-contained — copy it, email it,
+  or move it to another computer like any normal file, and it
+  will still open and work with no internet connection needed
+  (only the base map tiles need internet to load images).
+
+  Want an image (PNG) instead of an interactive file?
+  Open the .html in your browser, then use your browser's
+  "Print → Save as PDF" or a screenshot tool to capture it.
 """)
     input("\n  [Press ENTER to return to menu]")
     main_menu()
