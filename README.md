@@ -132,6 +132,39 @@ The tool applies two layers of filtering to surface only genuine small businesse
 
 ---
 
+## Bonus & Goal Allocator (MVP)
+
+A separate, self-contained script that has nothing to do with prospecting: it splits one big
+company milestone (e.g. "365 new customers this year") into per-person sub-goals and computes
+each team member's bonus from a rule you set once per person. Plain-text terminal only, no
+network calls, no sharing features — your data stays in a local `bonus_data.json` file.
+
+```bash
+python3 bonus_goal_allocator.py
+```
+
+Three bonus rules are supported per team member:
+
+| Rule | How the bonus is computed | Good fit for |
+|------|---------------------------|--------------|
+| Per unit | rate × units they achieved | Sales/marketing (e.g. €129 per new subscriber) |
+| Milestone | flat amount once their own sub-goal is hit (prorated below 100%) | Engineers with a target like "raise conversion rate from 0.8% to 1.2%" |
+| Pool share | a % of a shared bonus pool set on the company goal | Anyone whose contribution supports the whole goal rather than a countable unit |
+
+### Desktop shortcut
+
+To avoid opening a code editor every time, run this once after cloning the repo:
+
+```bash
+python3 install_desktop_shortcut.py
+```
+
+It detects your OS and drops a double-click shortcut on your Desktop (`Bonus Allocator.command`
+on macOS, `Bonus Allocator.desktop` on Linux, `Bonus Allocator.bat` on Windows) that launches
+`bonus_goal_allocator.py` directly from wherever you cloned this repo.
+
+---
+
 ## Contributing
 
 This project is feature-complete for its intended use case. That said, if you find a bug or have a focused improvement in mind, feel free to open an issue or a pull request. Ideas that could make this genuinely more useful to others are welcome.
